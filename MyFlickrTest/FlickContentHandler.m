@@ -45,6 +45,7 @@
 
 - (void)searchOnFlickr:(NSString*)search
 {
+    
     if (_type == iOSApi)
     {
         if (![flickrRequest isRunning]) {
@@ -54,24 +55,16 @@
     }
     else if (_type == PythonApi)
     {
-        
+        [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication] keyWindow] animated:YES];
+        [self sendSynchronousHTTPRequest:search];
     }
 }
 
-#pragma mark -
-#pragma mark - Flickr delegate for Python APi
-
-
-
-#pragma mark -
-#pragma mark - Flickr delegate for iOS API
-
-- (void)flickrAPIRequest:(OFFlickrAPIRequest *)inRequest didCompleteWithResponse:(NSDictionary *)inResponseDictionary
+- (void)fetchResult:(NSArray*)result
 {
-	NSArray *photoDict = [inResponseDictionary valueForKeyPath:@"photos.photo"];
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-
-    for (NSDictionary *content in photoDict)
+    NSMutableArray *daRockWilder = [[NSMutableArray alloc] init];
+    
+    for (NSDictionary *content in result)
     {
         NSString *title;
         [[content objectForKey:@"title"] length] == 0 ? (title = @"No title") : (title = [content objectForKey:@"title"]);
@@ -79,10 +72,42 @@
         NSURL *photoURL = [flickrContext photoSourceURLFromDictionary:content size:OFFlickrLargeSize];
         UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:photoURL]];
         
-        [result addObject:@[title, image]];
+        [daRockWilder addObject:@[title, image]];
     }
     [MBProgressHUD hideAllHUDsForView:[[UIApplication sharedApplication] keyWindow] animated:YES];
-    [self hadContent:result];
+    [self hadContent:daRockWilder];
+}
+
+#pragma mark -
+#pragma mark - Flickr delegate for Python APi
+
+- (void)sendSynchronousHTTPRequest:(NSString*)search
+{
+    NSString* requestUrl = [NSString stringWithFormat:@"http://testflickrcd.appspot.com/search_flickr?to_search=%@", search];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:requestUrl]
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:15];
+    [request setHTTPMethod: @"GET"];
+    NSError *requestError;
+    NSURLResponse *urlResponse = nil;
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
+
+    NSLog(@"UrlResponse = %@", urlResponse);
+    if (requestError)
+        NSLog(@"Error while parsing");
+    else
+    {
+        NSArray *result = [[NSArray alloc] init];
+        [self fetchResult:result];
+    }
+}
+
+#pragma mark -
+#pragma mark - Flickr delegate for iOS API
+
+- (void)flickrAPIRequest:(OFFlickrAPIRequest *)inRequest didCompleteWithResponse:(NSDictionary *)inResponseDictionary
+{
+    [self fetchResult:[inResponseDictionary valueForKeyPath:@"photos.photo"]];
 }
 
 - (void)flickrAPIRequest:(OFFlickrAPIRequest *)inRequest didFailWithError:(NSError *)inError
