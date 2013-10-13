@@ -129,10 +129,10 @@ typedef unsigned int NSUInteger;
 	// http://farm{farm-id}.static.flickr.com/{server-id}/{id}_{secret}_[mstb].jpg
 	// http://farm{farm-id}.static.flickr.com/{server-id}/{id}_{secret}.jpg
 	
-	NSString *farm = [inDictionary objectForKey:@"farm"];
-	NSString *photoID = [inDictionary objectForKey:@"id"];
-	NSString *secret = [inDictionary objectForKey:@"secret"];
-	NSString *server = [inDictionary objectForKey:@"server"];
+	NSString *farm = [NSString stringWithFormat:@"%@", [inDictionary objectForKey:@"farm"]];
+	NSString *photoID = [NSString stringWithFormat:@"%@", [inDictionary objectForKey:@"id"]];
+	NSString *secret = [NSString stringWithFormat:@"%@", [inDictionary objectForKey:@"secret"]];
+	NSString *server = [NSString stringWithFormat:@"%@", [inDictionary objectForKey:@"server"]];
 	
 	NSMutableString *URLString = [NSMutableString stringWithString:@"http://"];
 	if ([farm length]) {

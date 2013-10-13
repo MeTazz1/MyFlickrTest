@@ -116,6 +116,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		611143A1180B15FB00F77C51 /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				6187489018099322008CB37F /* MBProgressHUD.h */,
+				6187489118099322008CB37F /* MBProgressHUD.m */,
+			);
+			name = MBProgressHUD;
+			sourceTree = "<group>";
+		};
 		6187486F18097ECF008CB37F /* FlickrFramework */ = {
 			isa = PBXGroup;
 			children = (
@@ -139,9 +148,8 @@
 		6187488818099274008CB37F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				611143A1180B15FB00F77C51 /* MBProgressHUD */,
 				6187486F18097ECF008CB37F /* FlickrFramework */,
-				6187489018099322008CB37F /* MBProgressHUD.h */,
-				6187489118099322008CB37F /* MBProgressHUD.m */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";

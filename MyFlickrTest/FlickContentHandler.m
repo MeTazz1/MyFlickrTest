@@ -16,16 +16,9 @@
 - (FlickContentHandler*)initWithType:(ContentType)type
 {
     _type = type;
-    if (type == iOSApi)
-    {
-        flickrContext = [[OFFlickrAPIContext alloc] initWithAPIKey:FLICKR_API_KEY sharedSecret:FLICKR_SECRET_KEY];
-        flickrRequest = [[OFFlickrAPIRequest alloc] initWithAPIContext:flickrContext];
-        [flickrRequest setDelegate:self];
-    }
-    else
-    {
-        
-    }
+    flickrContext = [[OFFlickrAPIContext alloc] initWithAPIKey:FLICKR_API_KEY sharedSecret:FLICKR_SECRET_KEY];
+    flickrRequest = [[OFFlickrAPIRequest alloc] initWithAPIContext:flickrContext];
+    [flickrRequest setDelegate:self];
     return self;
 }
 
@@ -56,7 +49,7 @@
     else if (_type == PythonApi)
     {
         [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication] keyWindow] animated:YES];
-        [self sendSynchronousHTTPRequest:search];
+        [self performSelectorInBackground:@selector(sendSynchronousHTTPRequest:) withObject:search];
     }
 }
 
@@ -83,22 +76,23 @@
 
 - (void)sendSynchronousHTTPRequest:(NSString*)search
 {
-    NSString* requestUrl = [NSString stringWithFormat:@"http://testflickrcd.appspot.com/search_flickr?to_search=%@", search];
+    NSString* requestUrl = [NSString stringWithFormat:@"http://testflickrcd.appspot.com/?search=%@", search];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:requestUrl]
                                                            cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                                        timeoutInterval:15];
     [request setHTTPMethod: @"GET"];
     NSError *requestError;
     NSURLResponse *urlResponse = nil;
-    [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
 
-    NSLog(@"UrlResponse = %@", urlResponse);
     if (requestError)
         NSLog(@"Error while parsing");
     else
     {
-        NSArray *result = [[NSArray alloc] init];
-        [self fetchResult:result];
+        if (responseData) {
+            NSDictionary *killingInTheName = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
+            [self fetchResult:[killingInTheName valueForKeyPath:@"photos.photo"]];
+        }
     }
 }
 
