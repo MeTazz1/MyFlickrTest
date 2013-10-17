@@ -12,7 +12,8 @@
 typedef enum ContentType
 {
     iOSApi,
-    PythonApi
+    PythonApi,
+    DjangoApi
 } ContentType;
 
 #endif

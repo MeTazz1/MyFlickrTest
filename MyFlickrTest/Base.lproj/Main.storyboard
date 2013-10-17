@@ -95,7 +95,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="RVN-eH-T61">
-                                <rect key="frame" x="0.0" y="20" width="320" height="499"/>
+                                <rect key="frame" x="0.0" y="74" width="320" height="445"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <searchBar key="tableHeaderView" contentMode="redraw" id="njo-HJ-GIo">
@@ -111,12 +111,24 @@
                                     <outlet property="delegate" destination="QUy-BD-bpt" id="O4n-Fd-Ppm"/>
                                 </connections>
                             </tableView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="fZx-ju-MUz">
+                                <rect key="frame" x="60" y="38" width="201" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Python Server"/>
+                                    <segment title="Django Server"/>
+                                </segments>
+                                <connections>
+                                    <action selector="segmentedOnChangedValue" destination="QUy-BD-bpt" eventType="valueChanged" id="lSI-rO-Cqu"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Python API" image="second" id="Z7h-1E-pvt"/>
+                    <tabBarItem key="tabBarItem" title="Python APIs" image="second" id="Z7h-1E-pvt"/>
                     <connections>
                         <outlet property="contentTableView" destination="RVN-eH-T61" id="KS5-B6-gau"/>
+                        <outlet property="serverChoiceSegmentedControl" destination="fZx-ju-MUz" id="O7Q-eR-MKi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3qq-4t-Ow8" sceneMemberID="firstResponder"/>

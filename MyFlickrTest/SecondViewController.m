@@ -13,12 +13,13 @@
 @interface SecondViewController ()
 
 @property (nonatomic, strong) IBOutlet UITableView *contentTableView;
-
+@property (nonatomic, strong) IBOutlet UISegmentedControl *serverChoiceSegmentedControl;
 @end
 
 @implementation SecondViewController
 
 @synthesize contentTableView = _contentTableView;
+@synthesize serverChoiceSegmentedControl = _serverChoiceSegmentedControl;
 
 #pragma mark - 
 #pragma mark - Life cycle
@@ -111,6 +112,19 @@
 - (void)hadReceivedContent:(NSMutableArray *)content
 {
     _lastLoadedContent = content;
+    [_contentTableView reloadData];
+}
+
+#pragma mark - 
+#pragma mark - Actions
+
+- (IBAction)segmentedOnChangedValue
+{
+    if (_serverChoiceSegmentedControl.selectedSegmentIndex == 0)
+        [_flickrHandler switchFlickrApiType:PythonApi];
+    else
+        [_flickrHandler switchFlickrApiType:DjangoApi];
+    [_lastLoadedContent removeAllObjects];
     [_contentTableView reloadData];
 }
 

@@ -38,7 +38,6 @@
 
 - (void)searchOnFlickr:(NSString*)search
 {
-    
     if (_type == iOSApi)
     {
         if (![flickrRequest isRunning]) {
@@ -46,7 +45,7 @@
             [flickrRequest callAPIMethodWithGET:@"flickr.photos.search" arguments:[NSDictionary dictionaryWithObjectsAndKeys:search, @"text", PER_PAGE, @"per_page", nil]];
         }
     }
-    else if (_type == PythonApi)
+    else if (_type == PythonApi || _type == DjangoApi)
     {
         [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication] keyWindow] animated:YES];
         [self performSelectorInBackground:@selector(sendSynchronousHTTPRequest:) withObject:search];
@@ -76,11 +75,17 @@
 
 - (void)sendSynchronousHTTPRequest:(NSString*)search
 {
-    NSString* requestUrl = [NSString stringWithFormat:@"http://testflickrcd.appspot.com/?search=%@", search];
+    search = [search stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    NSString *requestUrl;
+    if (_type == PythonApi)
+        requestUrl = [NSString stringWithFormat:@"http://testflickrcd.appspot.com/?search=%@", search];
+    else if (_type == DjangoApi)
+        requestUrl = [NSString stringWithFormat:@"http://localhost:8080/FlickrDjango/%@/", search];
+
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:requestUrl]
                                                            cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                                        timeoutInterval:15];
-    [request setHTTPMethod: @"GET"];
+    [request setHTTPMethod:@"GET"];
     NSError *requestError;
     NSURLResponse *urlResponse = nil;
     NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];

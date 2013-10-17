@@ -13,7 +13,9 @@
 {
     FlickContentHandler *_flickrHandler;
     
-    NSArray *_lastLoadedContent;
+    NSMutableArray *_lastLoadedContent;
 }
+
+- (IBAction)segmentedOnChangedValue;
 
 @end
